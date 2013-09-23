@@ -1,73 +1,92 @@
 #!/usr/bin/env node
 
-/**
- * Module dependencies.
- */
-
-var program = require('commander'),
-	package = require('./package');
+'use strict'
 
 var list = function(files) {
-	var path = require('path'),
-		paths = files.split(',');
-	
-	return paths.map(function(string) {
+	var path = require('path');
+	return files.split(',').map(function(string) {
 		string = string.trim();
-		if (string.substr(0,1) === '~') {
-    		return path.join(process.env.HOME, string.substr(1));
-    	}
-    	else {
-    		return string;
-    	}
+		return (string.substr(0,1) === '~') ? path.join(process.env.HOME, string.substr(1)) : string;
 	});
-}
-
-var getFiles = function(directory, recursive) {
-	var fs = require('fs'),
-		path = require('path'),
-		files = fs.readdirSync(directory),
-		toCheck = [];
-	
-	files.forEach(function(file) {
-		if(file.match(/\.(?:jpe?g|png|gif)$/)) {
-			toCheck.push(path.join(directory, file));
-		}
-	});
-	return toCheck;
 };
 
-var getExif = function(files) {
-	var exif = require('exif2');
+var getImageFilesInDirectory = function(directory, recursive) {
+	var fs = require('fs'),
+		path = require('path'),
+		result = [];
 	
-	files.forEach(function(path) {
-		exif(path, function(err, obj) {
-			if(err) {
-				console.log('Error: ', err);
-			}
-			else {
-				console.log('Getting exif data for file %s:\n', path, obj);
+	if(recursive) {
+		var wrench = require('wrench');
+		wrench.readdirSyncRecursive(directory).forEach(function(file) {
+			if(file.match(/\.(?:jpe?g|png|gif)$/)) {
+				result.push(path.join(directory, file));
 			}
 		});
+	}
+	else {
+		fs.readdirSync(directory).forEach(function(file) {
+			if(file.match(/\.(?:jpe?g|png|gif)$/)) {
+				result.push(path.join(directory, file));
+			}
+		});
+	}
+	return result;
+};
+
+var getExifData = function(file, callback) {
+	var exif = require('exif2');
+	
+	exif(file, function(err, obj) {
+		var result = {
+			file: file
+		};
+		if(err) {
+			result.error = err;
+		}
+		else {
+			result.exif = obj;
+		}
+		callback(null, result);
 	});
+};
+
+var processResults = function(results) {
+	//this function will handle all the results
+	//you can potentially save them to a database, or do something with them
+	console.log(results);
 };
 
 var main = function() {
+	var program = require('commander'),
+		async = require('async'),
+		version = require('./package').version,
+		files = [];
+
 	program
-		.version(package.version)
+		.version(version)
 		.usage('[options] <path>')
-		.option('-f, --file <file,file,...>', 'Get exif data from file/s', list)
-		.option('-d, --directory <path>', 'Get exif data from all files in directory')
+		.option('-f, --file <file,file,...>', 'Get EXIF data from file/s', list)
+		.option('-d, --directory <path>', 'Get EXIF data from all files in directory')
 		.option('-r, --recursive', 'Look for files in sub-directories')
 		.parse(process.argv);
 
 	if(program.file && program.file.length > 0) {
-		getExif(program.file);	
+		files = program.file;
 	}
 
 	if(program.directory) {
 		console.log('Getting exif data for all files in: %s %s', program.directory, (program.recursive ? 'recursively' : ''));
-		getExif(getFiles(program.directory, program.recursive));
+		files = getImageFilesInDirectory(program.directory, program.recursive);
 	}
+
+	async.map(files, 
+		function(file, callback) {
+			getExifData(file, callback);
+		},
+		function(error, result) {
+			processResults(result);
+		}
+	);
 };
 
 main();

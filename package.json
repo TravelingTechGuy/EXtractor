@@ -1,7 +1,7 @@
 {
-  "name": "exif",
-  "version": "0.0.2",
-  "description": "Extract exif data from photo file",
+  "name": "EXtractor",
+  "version": "0.1.0",
+  "description": "Extract EXIF data from photo files/directory/ies",
   "main": "exif.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,9 +11,11 @@
     "photo"
   ],
   "author": "Guy Vider",
-  "license": "BSD-2-Clause",
+  "license": "MIT",
   "dependencies": {
     "commander": "latest",
-    "exif2": "latest"
+    "exif2": "latest",
+    "async": "latest",
+    "wrench": "~1.5.1"
   }
 }
