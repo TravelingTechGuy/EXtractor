@@ -1,0 +1,19 @@
+{
+  "name": "exif",
+  "version": "0.0.2",
+  "description": "Extract exif data from photo file",
+  "main": "exif.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "exif",
+    "photo"
+  ],
+  "author": "Guy Vider",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "commander": "latest",
+    "exif2": "latest"
+  }
+}
