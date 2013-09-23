@@ -2,6 +2,7 @@
 
 'use strict'
 
+//turn comma separated paths to array of paths - resolving home directory, if needed
 var list = function(files) {
 	var path = require('path');
 	return files.split(',').map(function(string) {
@@ -10,29 +11,30 @@ var list = function(files) {
 	});
 };
 
+//get all image files in a directory synchronously - recursively, if needed
 var getImageFilesInDirectory = function(directory, recursive) {
 	var fs = require('fs'),
 		path = require('path'),
 		result = [];
 	
+	//filter file by their extension - feel free to add more file names
+	var filterFiles = function(file) {
+		if(file.match(/\.(?:jpe?g|png|gif)$/)) {
+			result.push(path.join(directory, file));
+		}
+	};
+
 	if(recursive) {
 		var wrench = require('wrench');
-		wrench.readdirSyncRecursive(directory).forEach(function(file) {
-			if(file.match(/\.(?:jpe?g|png|gif)$/)) {
-				result.push(path.join(directory, file));
-			}
-		});
+		wrench.readdirSyncRecursive(directory).forEach(filterFiles);
 	}
 	else {
-		fs.readdirSync(directory).forEach(function(file) {
-			if(file.match(/\.(?:jpe?g|png|gif)$/)) {
-				result.push(path.join(directory, file));
-			}
-		});
+		fs.readdirSync(directory).forEach(filterFiles);
 	}
 	return result;
 };
 
+//get EXIF data from file, return result, or error
 var getExifData = function(file, callback) {
 	var exif = require('exif2');
 	
@@ -50,12 +52,13 @@ var getExifData = function(file, callback) {
 	});
 };
 
+//this function will handle all the results
+//you can potentially save them to a database, or do something with them
 var processResults = function(results) {
-	//this function will handle all the results
-	//you can potentially save them to a database, or do something with them
 	console.log(results);
 };
 
+//main function
 var main = function() {
 	var program = require('commander'),
 		async = require('async'),
