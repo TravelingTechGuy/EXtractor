@@ -231,7 +231,7 @@ $ ./exif.js -d ~/Pictures/Me
 * Recursive directories
 
 ```
-$ ./exif.js -dr ~/Pictures/Me
+$ ./exif.js -rd ~/Pictures/Me
 
 [even more results...]
 ```
