@@ -30,6 +30,7 @@ Examples
 * Single file
 ```
 $ ./exif.js -f ~/Pictures/Me/me3.jpg
+
 [ { file: '/Users/redacted/Pictures/Me/me3.jpg',
     exif:
      { 'exiftool version number': '9.37',
@@ -57,6 +58,7 @@ $ ./exif.js -f ~/Pictures/Me/me3.jpg
 * Multiple files
 ```
 $ ./exif.js -f ~/Pictures/Me/me3.jpg,~/Pictures/Me/PICT4050.JPG
+
 [ { file: '/Users/redacted/Pictures/Me/me3.jpg',
     exif:
      { 'exiftool version number': '9.37',
@@ -218,10 +220,12 @@ $ ./exif.js -f ~/Pictures/Me/me3.jpg,~/Pictures/Me/PICT4050.JPG
 * Directory
 ```
 $ ./exif.js -d ~/Pictures/Me
+
 [results...]
 ```
 * Recursive directories
 ```
 $ ./exif.js -dr ~/Pictures/Me
+
 [even more results...]
 ```
