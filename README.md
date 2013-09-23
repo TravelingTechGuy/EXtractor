@@ -28,9 +28,9 @@ Examples
 --------
 
 * Single file
+
 ```
 $ ./exif.js -f ~/Pictures/Me/me3.jpg
-
 [ { file: '/Users/redacted/Pictures/Me/me3.jpg',
     exif:
      { 'exiftool version number': '9.37',
@@ -55,7 +55,9 @@ $ ./exif.js -f ~/Pictures/Me/me3.jpg
        'y cb cr sub sampling': 'YCbCr4:4:4 (1 1)',
        'image size': '578x627' } } ]
 ```
+
 * Multiple files
+
 ```
 $ ./exif.js -f ~/Pictures/Me/me3.jpg,~/Pictures/Me/PICT4050.JPG
 
@@ -217,13 +219,17 @@ $ ./exif.js -f ~/Pictures/Me/me3.jpg,~/Pictures/Me/PICT4050.JPG
        'hyperfocal distance': '32.69 m',
        'light value': '9.5' } } ]
 ```
+
 * Directory
+
 ```
 $ ./exif.js -d ~/Pictures/Me
 
 [results...]
 ```
+
 * Recursive directories
+
 ```
 $ ./exif.js -dr ~/Pictures/Me
 
