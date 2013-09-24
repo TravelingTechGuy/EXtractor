@@ -24,12 +24,17 @@ var getImageFilesInDirectory = function(directory, recursive) {
 		}
 	};
 
-	if(recursive) {
-		var wrench = require('wrench');
-		wrench.readdirSyncRecursive(directory).forEach(filterFiles);
+	if(fs.statSync(directory).isDirectory()) {
+		if(recursive) {
+			var wrench = require('wrench');
+			wrench.readdirSyncRecursive(directory).forEach(filterFiles);
+		}
+		else {
+			fs.readdirSync(directory).forEach(filterFiles);
+		}
 	}
 	else {
-		fs.readdirSync(directory).forEach(filterFiles);
+		console.error('%s is not a directory', directory);
 	}
 	return result;
 };
@@ -76,20 +81,24 @@ var main = function() {
 	if(program.file && program.file.length > 0) {
 		files = program.file;
 	}
-
-	if(program.directory) {
-		console.log('Getting exif data for all files in: %s %s', program.directory, (program.recursive ? 'recursively' : ''));
+	else if(program.directory) {
+		//console.log('Getting exif data for all files in: %s %s', program.directory, (program.recursive ? 'recursively' : ''));
 		files = getImageFilesInDirectory(program.directory, program.recursive);
 	}
 
-	async.map(files, 
-		function(file, callback) {
-			getExifData(file, callback);
-		},
-		function(error, result) {
-			processResults(result);
-		}
-	);
+	if(files.length > 0) {
+		async.map(files, 
+			function(file, callback) {
+				getExifData(file, callback);
+			},
+			function(error, result) {
+				processResults(result);
+			}
+		);
+	}
+	else {
+		console.error('No files found. Please use the -h flag to learn about the availble options')
+	}
 };
 
 main();
