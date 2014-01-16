@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-'use strict'
+'use strict';
 
 //turn comma separated paths to array of paths - resolving home directory, if needed
 var list = function(files) {
