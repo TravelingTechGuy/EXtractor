@@ -97,7 +97,7 @@ var main = function() {
 		);
 	}
 	else {
-		console.error('No files found. Please use the -h flag to learn about the availble options')
+		console.error('No files found. Please use the -h flag to learn about the availble options');
 	}
 };
 
